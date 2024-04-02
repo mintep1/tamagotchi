@@ -18,7 +18,12 @@ Hardware Hookup:
     LCD D5 pin to digital pin 10
     LCD D6 pin to digital pin 9
     LCD D7 pin to digital pin 8
-    LCD-Backlight - Anode to 10KΩ resistor to +5V (optional depending on your LCD)
+    LCD-Backlight - Anode to 10KΩ resistor to +5V (optional depending on your LC
+Chat
+
+
+
+D)
     LCD Backlight - K to GND
 */
 
@@ -27,13 +32,10 @@ Hardware Hookup:
 #define GreenPin 6
 #define YellowPin 5
 
-// rs = register select pin
-// en = enable pin
-// d = data pins (d4-d7)
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-// const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8;
-// LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+#include <LiquidCrystal.h>
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 12);
 
 void setup() {
   Serial.begin(9600);
