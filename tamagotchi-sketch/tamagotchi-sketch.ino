@@ -28,35 +28,63 @@ D)
 */
 
 #include <LiquidCrystal.h>
-#define RedPin 4
+#define RedPin 6
 #define YellowPin 7
 #define GreenPin 13
 byte noLed = 100;
-byte lastLedState = LOW;
 int redBtn = 8;
 int yellBtn = 9;
 int greenBtn = 10;
-int btnState = 0;
+int ledState = 0;
 byte ledArray[4] = { RedPin, GreenPin, YellowPin, noLed };
-unsigned long debounceDuration = 50;  // millis
-unsigned long lastTimeButtonStateChanged = 0;
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
+String display = "(^ > o <^)!!";
+int row = 0;
+int column = 2;
+
+byte knife[8] = {
+  0b00010,
+  0b00110,
+  0b01110,
+  0b01110,
+  0b01110,
+  0b00110,
+  0b00110,
+  0b00110
+};
+
+byte fork[8] = {
+  0b10101,
+  0b10101,
+  0b10101,
+  0b01110,
+  0b00100,
+  0b00100,
+  0b00100,
+  0b00100
+};
+
 void setup() {
   Serial.begin(9600);
 
-  //set the LED pins to output
+  //set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+
+  lcd.createChar(0, knife);
+  lcd.createChar(1, fork);
+
+
   pinMode(redBtn, INPUT_PULLUP);
   pinMode(yellBtn, INPUT_PULLUP);
   pinMode(greenBtn, INPUT_PULLUP);
+
+  //set the LED pins to output
   pinMode(RedPin, OUTPUT);
   pinMode(GreenPin, OUTPUT);
   pinMode(YellowPin, OUTPUT);
-
-  //set up the LCD's number of columns and rows:
-  // lcd.begin(16, 2);
 }
 void turnOff() {
   //set all three LED pins to 0 or OFF
@@ -75,14 +103,17 @@ byte stateCheck(byte val1, byte val2, byte val3) {
   return LOW;
 }
 
-void lightOff(int led) {
-  digitalWrite(led, LOW);
+void printNormal() {
+  lcd.clear();
+  display = "(^ > o <^)!!";
 }
 
 void loop() {
   //set the cursor to column 0, line 1
   //(note: line 1 is the second row, since counting begins with 0):
-  // lcd.setCursor(0, 1);
+  lcd.setCursor(column, row);
+  lcd.print(display);
+
   //Select random LED to turn on
   byte led = ledArray[random(0, 4)];
 
@@ -90,16 +121,44 @@ void loop() {
   byte red = digitalRead(RedPin);
   byte green = digitalRead(GreenPin);
   byte yellow = digitalRead(YellowPin);
-  // Serial.println(red);
-  // Serial.println(yellow);
-  // Serial.println(green);
 
   byte anyLedOn = stateCheck(yellow, red, green);
+
   if (anyLedOn == LOW) {
+    display = "(^ > o <^)!!";
+    delay(random(1000, 5000));
     if (led != noLed) {
-      delay(random(10000, 60000));
       digitalWrite(led, HIGH);
+      anyLedOn = HIGH;
     }
+  }
+
+  if (anyLedOn == HIGH) {
+    lcd.clear();
+    if (red == HIGH) {
+      display = "(_ _ ). . z Z";
+      lcd.setCursor(3, 1);
+      lcd.print("Sleepy...");
+    }
+    if (yellow == HIGH) {
+      lcd.clear();
+      lcd.setCursor(4, 0);
+      lcd.write((byte)1);
+      column = 5;
+      display = "(^q^)";
+      lcd.setCursor(10, 0);
+      lcd.write((byte)0);
+      lcd.setCursor(4, 1);
+      lcd.print("Feed Me!");
+    }
+    if (green == HIGH) {
+      // lcd.setCursor(3, 0);
+      column = 3;
+      display = "(  ; ^ ; )";
+      lcd.setCursor(5, 1);
+      lcd.print("Pet Me!");
+    }
+    ledState = 0;
   }
 
   // Read Button States and change LED state
@@ -107,16 +166,16 @@ void loop() {
   byte greenState = digitalRead(greenBtn);
   byte yellowState = digitalRead(yellBtn);
 
-  if (redState == LOW) {
+  if (redState == LOW && red == HIGH) {
     digitalWrite(RedPin, LOW);
-    delay(2000);
+    printNormal();
   }
-  if (yellowState == LOW) {
+  if (yellowState == LOW && yellow == HIGH) {
     digitalWrite(YellowPin, LOW);
-    delay(2000);
+    printNormal();
   }
-  if (greenState == LOW) {
+  if (greenState == LOW && green == HIGH) {
     digitalWrite(GreenPin, LOW);
-    delay(2000);
+    printNormal();
   }
 }
