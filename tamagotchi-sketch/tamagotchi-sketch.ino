@@ -72,10 +72,11 @@ void setup() {
   //set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
 
+  //create unique characters using byte array
   lcd.createChar(0, knife);
   lcd.createChar(1, fork);
 
-
+  //set the button pins to receive input on release
   pinMode(redBtn, INPUT_PULLUP);
   pinMode(yellBtn, INPUT_PULLUP);
   pinMode(greenBtn, INPUT_PULLUP);
@@ -84,17 +85,11 @@ void setup() {
   pinMode(RedPin, OUTPUT);
   pinMode(GreenPin, OUTPUT);
   pinMode(YellowPin, OUTPUT);
-}
-void turnOff() {
-  //set all three LED pins to 0 or OFF
-  digitalWrite(RedPin, LOW);
-  digitalWrite(GreenPin, LOW);
-  digitalWrite(YellowPin, LOW);
-  digitalWrite(greenBtn, 0);
-  digitalWrite(redBtn, 0);
-  digitalWrite(yellBtn, 0);
+
+  printNormal();
 }
 
+// Check if any LEDs are on or off. Return the value or LOW.
 byte stateCheck(byte val1, byte val2, byte val3) {
   if (val1 == HIGH) return val1;
   if (val2 == HIGH) return val2;
@@ -102,6 +97,7 @@ byte stateCheck(byte val1, byte val2, byte val3) {
   return LOW;
 }
 
+// Print the character in it's normal state
 void printNormal() {
   lcd.clear();
   lcd.setCursor(2, 0);
@@ -117,10 +113,11 @@ void loop() {
   byte green = digitalRead(GreenPin);
   byte yellow = digitalRead(YellowPin);
 
+  //Store state of LEDs
   byte anyLedOn = stateCheck(yellow, red, green);
 
+  //If any of the LEDs are NOT on, turn on the randomly selected LED
   if (anyLedOn == LOW) {
-    printNormal();
     delay(random(1000, 5000));
     if (led != noLed) {
       digitalWrite(led, HIGH);
@@ -128,6 +125,7 @@ void loop() {
     }
   }
 
+  // If an LED is on, print the corresponding character state
   if (anyLedOn == HIGH) {
     lcd.clear();
     if (red == HIGH) {
@@ -139,7 +137,7 @@ void loop() {
       lcd.clear();
       lcd.setCursor(4, 0);
       lcd.write((byte)1);
-      lcd.setCursor(5,0);
+      lcd.setCursor(5, 0);
       lcd.print("(^q^)");
       lcd.setCursor(10, 0);
       lcd.write((byte)0);
@@ -154,11 +152,12 @@ void loop() {
     }
   }
 
-  // Read Button States and change LED state
+  // Read Button States
   byte redState = digitalRead(redBtn);
   byte greenState = digitalRead(greenBtn);
   byte yellowState = digitalRead(yellBtn);
 
+  // Change LED and character state when the corresponding button is pressed
   if (redState == LOW && red == HIGH) {
     digitalWrite(RedPin, LOW);
     printNormal();
