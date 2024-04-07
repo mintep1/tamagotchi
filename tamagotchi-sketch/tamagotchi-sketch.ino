@@ -35,15 +35,14 @@ byte noLed = 100;
 int redBtn = 8;
 int yellBtn = 9;
 int greenBtn = 10;
-int ledState = 0;
 byte ledArray[4] = { RedPin, GreenPin, YellowPin, noLed };
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-String display = "(^ > o <^)!!";
-int row = 0;
-int column = 2;
+// String display = "(^ > o <^)!!";
+// int row = 0;
+// int column = 2;
 
 byte knife[8] = {
   0b00010,
@@ -105,15 +104,11 @@ byte stateCheck(byte val1, byte val2, byte val3) {
 
 void printNormal() {
   lcd.clear();
-  display = "(^ > o <^)!!";
+  lcd.setCursor(2, 0);
+  lcd.print("(^ > o <^)!!");
 }
 
 void loop() {
-  //set the cursor to column 0, line 1
-  //(note: line 1 is the second row, since counting begins with 0):
-  lcd.setCursor(column, row);
-  lcd.print(display);
-
   //Select random LED to turn on
   byte led = ledArray[random(0, 4)];
 
@@ -125,7 +120,7 @@ void loop() {
   byte anyLedOn = stateCheck(yellow, red, green);
 
   if (anyLedOn == LOW) {
-    display = "(^ > o <^)!!";
+    printNormal();
     delay(random(1000, 5000));
     if (led != noLed) {
       digitalWrite(led, HIGH);
@@ -136,7 +131,7 @@ void loop() {
   if (anyLedOn == HIGH) {
     lcd.clear();
     if (red == HIGH) {
-      display = "(_ _ ). . z Z";
+      lcd.print("(_ _ ). . z Z");
       lcd.setCursor(3, 1);
       lcd.print("Sleepy...");
     }
@@ -144,21 +139,19 @@ void loop() {
       lcd.clear();
       lcd.setCursor(4, 0);
       lcd.write((byte)1);
-      column = 5;
-      display = "(^q^)";
+      lcd.setCursor(5,0);
+      lcd.print("(^q^)");
       lcd.setCursor(10, 0);
       lcd.write((byte)0);
       lcd.setCursor(4, 1);
       lcd.print("Feed Me!");
     }
     if (green == HIGH) {
-      // lcd.setCursor(3, 0);
-      column = 3;
-      display = "(  ; ^ ; )";
+      lcd.setCursor(3, 0);
+      lcd.print("(  ; ^ ; )");
       lcd.setCursor(5, 1);
       lcd.print("Pet Me!");
     }
-    ledState = 0;
   }
 
   // Read Button States and change LED state
