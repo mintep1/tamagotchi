@@ -1,30 +1,25 @@
-/*c
-Hookup guide used:
-https://learn.sparkfun.com/tutorials/basic-character-lcd-hookup-guide
-
-Hardware Hookup:
-
-    LCD VSS pin to GND
-    LCD VCC pin to 5V
-    10kΩ Potentiometer to LCD VO pin (pin 3)
-    LCD RS pin to digital pin 13
-    LCD R/W pin to GND
-    LCD Enable pin to digital pin 12
-    .
-    .
-    .
-    .
-    LCD D4 pin to digital pin 11
-    LCD D5 pin to digital pin 10
-    LCD D6 pin to digital pin 9
-    LCD D7 pin to digital pin 8
-    LCD-Backlight - Anode to 10KΩ resistor to +5V (optional depending on your LC
-Chat
-
-
-
-D)
-    LCD Backlight - K to GND
+/**
+* Tamagotchi game using LEDs to display the different states of the virtual character
+* Author: Elizabeth Minty
+* Hookup:
+* 13 - Green LED
+* 12 - RS
+* 11 - E
+* 10 - Green Button
+* 9 - Yellow Button
+* 8 - Red Button
+* 7 - Yellow LED
+* 6 - Red LED
+* 5 - D4
+* 4 - D3
+* 3 - D2
+* 2 - D1
+* 
+* A virtual character is displayed for the user to take care of!
+* Its status is presented in the form of LEDs and character design.
+* 
+* All code written is original. References used for further understanding, hookup help, and code debugging are listed
+* in a seperate document titled "references.txt".
 */
 
 #include <LiquidCrystal.h>
@@ -39,10 +34,6 @@ byte ledArray[4] = { RedPin, GreenPin, YellowPin, noLed };
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-
-// String display = "(^ > o <^)!!";
-// int row = 0;
-// int column = 2;
 
 byte knife[8] = {
   0b00010,
